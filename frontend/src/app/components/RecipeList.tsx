@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import Link from 'next/link';
+import { countryOptions } from '@/constants/countries';
 
 interface Recipe {
   idMeal: string;
@@ -17,13 +18,23 @@ export default function RecipeList() {
   const [loading, setLoading] = useState(true);
   const [ingredientSearchTerm, setIngredientSearchTerm] = useState('');
   const [searchTerm, setSearchTerm] = useState('');
+  const [selectedCountry, setSelectedCountry] = useState('');
+  const [countrySearchTerm, setCountrySearchTerm] = useState('');
 
   useEffect(() => {
     setLoading(true);
-    const params = searchTerm ? `?ingredient=${encodeURIComponent(searchTerm)}` : '';
+    const params = new URLSearchParams();
+
+    if (searchTerm) params.append('ingredient', searchTerm);
+    if (selectedCountry) params.append('country', selectedCountry);
+
+    const queryString = params.toString();
+    const url = queryString
+      ? `${process.env.NEXT_PUBLIC_API_BASE}/recipes?${queryString}`
+      : `${process.env.NEXT_PUBLIC_API_BASE}/recipes`;
 
     axios
-      .get(`${process.env.NEXT_PUBLIC_API_BASE}/recipes${params}`)
+      .get(`${url}`)
       .then((response) => {
         const meals = response.data || [];
         setRecipesList(meals);
@@ -33,30 +44,56 @@ export default function RecipeList() {
         console.error('Error fetching recipes:', error);
       })
       .finally(() => setLoading(false));
-  }, [searchTerm]);
+  }, [searchTerm, countrySearchTerm]);
 
   if (loading) return <p>Loading recipes...</p>;
 
   return (
     <main>
-      <h1 className="text-4xl font-bold mb-8 text-center text-gray-800">
+      <h1 className="text-4xl font-bold my-10 text-center text-gray-800">
         Recipe list
       </h1>
-      {/* Search bar for ingredient */}
-      <div className="flex gap-5 justify-center mb-8">
-        <input
-          type="text"
-          placeholder="Search by ingredient..."
-          value={ingredientSearchTerm}
-          onChange={(e) => setIngredientSearchTerm(e.target.value)}
-          className="border border-gray-400 rounded px-4 py-2 w-64 focus:outline-none focus:ring-2 focus:ring-orange-400"
-        />
-        <button
-          onClick={() => setSearchTerm(ingredientSearchTerm)}
-          className="bg-orange-400 text-white px-4 py-2 rounded hover:bg-orange-700 transition-colors duration-200"
-        >
-          Search
-        </button>
+
+      <div className="flex flex-col items-center">
+        {/* Search bar for ingredient */}
+        <div className="flex gap-5 justify-center mb-8">
+          <input
+            type="text"
+            placeholder="Search by ingredient..."
+            value={ingredientSearchTerm}
+            onChange={(e) => setIngredientSearchTerm(e.target.value)}
+            className="border border-gray-400 rounded px-4 py-2 w-64 focus:outline-none focus:ring-2 focus:ring-orange-400"
+          />
+          <button
+            onClick={() => setSearchTerm(ingredientSearchTerm)}
+            className="bg-orange-400 text-white px-4 py-2 rounded hover:bg-orange-700 transition-colors duration-200"
+          >
+            Search
+          </button>
+        </div>
+
+        {/* Country Select + Search Button */}
+        <div className="flex gap-5 justify-center mb-8">
+          <select
+            value={selectedCountry}
+            onChange={(e) => setSelectedCountry(e.target.value)}
+            className="w-[200px] border border-gray-400 rounded px-4 py-2"
+          >
+            <option value="">Select a country</option>
+            {countryOptions.map((country) => (
+              <option key={country} value={country}>
+                {country}
+              </option>
+            ))}
+          </select>
+
+          <button
+            onClick={() => setCountrySearchTerm(selectedCountry)}
+            className="bg-orange-400 text-white px-4 py-2 rounded hover:bg-orange-700 transition-colors duration-200 disabled:opacity-50"
+          >
+            Search Country
+          </button>
+        </div>
       </div>
 
       <ul className="flex flex-col items-center gap-12">
@@ -78,15 +115,15 @@ export default function RecipeList() {
               {recipe.strInstructions}
             </p>
             {recipe.strYoutube ? (
-            <Link
+              <Link
                 href={recipe.strYoutube}
                 target="_blank"
                 className="inline-block px-4 py-2 mt-auto bg-orange-400 text-white font-bold rounded hover:bg-orange-700 transition-colors duration-200 text-center"
-            >
+              >
                 Youtube link
-            </Link>
+              </Link>
             ) : (
-            <p className="text-gray-500 italic mt-auto">No video available</p>
+              <p className="text-gray-500 italic mt-auto">No video available</p>
             )}
           </li>
         ))}
