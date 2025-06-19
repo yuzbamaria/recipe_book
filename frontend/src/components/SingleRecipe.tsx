@@ -58,16 +58,18 @@ export default function SingleRecipe() {
     .map(([_, value]) => value);
 
   return (
-    <main className="flex p-10">
+    <main className="flex flex-col xl:flex-row p-10">
       {/* Left Content */}
 
       <div className="flex flex-col p-5">
-        <div className="flex gap-10 pb-6">
-          <img
-            src={recipe.strMealThumb}
-            alt={recipe.strMeal}
-            className="w-100 h-100 object-cover rounded shadow"
-          />
+        <div className="flex flex-col xl:flex-row gap-10 pb-6">
+          <div className='flex justify-center xl:justify-end'>
+            <img
+              src={recipe.strMealThumb}
+              alt={recipe.strMeal}
+              className="w-100 h-100 object-cover rounded shadow justify-center xl:justify-end"
+            />
+          </div>
           <div className="flex flex-col justify-center items-center">
             <h1 className="text-4xl font-bold text-center mb-2">
               {recipe.strMeal}
@@ -117,7 +119,7 @@ export default function SingleRecipe() {
       </div>
 
       {/* Right Sidebar */}
-      <aside className="flex flex-col p-5 w-[40%]">
+      <aside className="flex flex-col p-5 xl:w-[40%]">
         <div className="flex flex-col">
           <h2 className="text-xl font-bold pb-4">
             More from {recipe.strCategory} category

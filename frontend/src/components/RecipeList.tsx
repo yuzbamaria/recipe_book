@@ -74,86 +74,84 @@ export default function RecipeList() {
       <h1 className="text-4xl font-bold py-10 text-center text-gray-800">
         Recipe list
       </h1>
-      <div className="flex px-10 justify-center">
-        <div className="flex items-center gap-8">
-          {/* Search bar for ingredient */}
-          <div className="flex gap-5 justify-center pb-8">
-            <input
-              type="text"
-              placeholder="Search by ingredient..."
-              value={ingredientSearchTerm}
-              onChange={(e) => setIngredientSearchTerm(e.target.value)}
-              className="border border-gray-400 rounded px-4 py-2 w-64 focus:outline-none focus:ring-2 focus:ring-orange-400"
-            />
-            <button
-              onClick={() => setSearchTerm(ingredientSearchTerm)}
-              className="bg-orange-400 text-white px-4 py-2 rounded hover:bg-orange-700 transition-colors duration-200"
-            >
-              Search
-            </button>
-          </div>
+      <div className="flex flex-col items-center gap-2">
+        {/* Search bar for ingredient */}
+        <div className="flex gap-5 justify-center pb-8">
+          <input
+            type="text"
+            placeholder="Search by ingredient..."
+            value={ingredientSearchTerm}
+            onChange={(e) => setIngredientSearchTerm(e.target.value)}
+            className="border border-gray-400 rounded px-4 py-2 w-64 focus:outline-none focus:ring-2 focus:ring-orange-400"
+          />
+          <button
+            onClick={() => setSearchTerm(ingredientSearchTerm)}
+            className="bg-orange-400 text-white px-4 py-2 rounded hover:bg-orange-700 transition-colors duration-200"
+          >
+            Search
+          </button>
+        </div>
 
-          {/* Country Select + Search Button */}
-          <div className="flex gap-5 justify-center pb-8">
-            <select
-              value={selectedCountry}
-              onChange={(e) => setSelectedCountry(e.target.value)}
-              className="w-[200px] border border-gray-400 rounded px-4 py-2"
-            >
-              <option value="">Select a country</option>
-              {countryOptions.map((country) => (
-                <option key={country} value={country}>
-                  {country}
-                </option>
-              ))}
-            </select>
+        {/* Country Select + Search Button */}
+        <div className="flex gap-5 justify-center pb-8">
+          <select
+            value={selectedCountry}
+            onChange={(e) => setSelectedCountry(e.target.value)}
+            className="w-[200px] border border-gray-400 rounded px-4 py-2"
+          >
+            <option value="">Select a country</option>
+            {countryOptions.map((country) => (
+              <option key={country} value={country}>
+                {country}
+              </option>
+            ))}
+          </select>
 
-            <button
-              onClick={() => setCountrySearchTerm(selectedCountry)}
-              className="bg-orange-400 text-white px-4 py-2 rounded hover:bg-orange-700 transition-colors duration-200 disabled:opacity-50"
-            >
-              Search Country
-            </button>
-          </div>
+          <button
+            onClick={() => setCountrySearchTerm(selectedCountry)}
+            className="bg-orange-400 text-white px-4 py-2 rounded hover:bg-orange-700 transition-colors duration-200 disabled:opacity-50"
+          >
+            Search Country
+          </button>
+        </div>
 
-          {/* Category Select + Search Button */}
-          <div className="flex gap-5 justify-center pb-8">
-            <select
-              value={selectedCategory}
-              onChange={(e) => setSelectedCategory(e.target.value)}
-              className="w-[200px] border border-gray-400 rounded px-4 py-2"
-            >
-              <option value="">Select a category</option>
-              {categoriesOptions.map((category) => (
-                <option key={category} value={category}>
-                  {category}
-                </option>
-              ))}
-            </select>
+        {/* Category Select + Search Button */}
+        <div className="flex gap-5 justify-center pb-8">
+          <select
+            value={selectedCategory}
+            onChange={(e) => setSelectedCategory(e.target.value)}
+            className="w-[200px] border border-gray-400 rounded px-4 py-2"
+          >
+            <option value="">Select a category</option>
+            {categoriesOptions.map((category) => (
+              <option key={category} value={category}>
+                {category}
+              </option>
+            ))}
+          </select>
 
-            <button
-              onClick={() => setCategorySearchTerm(selectedCategory)}
-              className="bg-orange-400 text-white px-4 py-2 rounded hover:bg-orange-700 transition-colors duration-200 disabled:opacity-50"
-            >
-              Search Category
-            </button>
-          </div>
-          <div className="pb-8">
-            <button
-              className="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400 transition-colors duration-200"
-              onClick={() => {
-                setIngredientSearchTerm('');
-                setSearchTerm('');
-                setSelectedCountry('');
-                setCountrySearchTerm('');
-                setSelectedCategory('');
-                setCategorySearchTerm('');
-                router.replace('/recipes');
-              }}
-            >
-              Clear All Filters
-            </button>
-          </div>
+          <button
+            onClick={() => setCategorySearchTerm(selectedCategory)}
+            className="bg-orange-400 text-white px-4 py-2 rounded hover:bg-orange-700 transition-colors duration-200 disabled:opacity-50"
+          >
+            Search Category
+          </button>
+        </div>
+        <div className="pb-8">
+          <button
+            className="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400 transition-colors duration-200"
+            onClick={() => {
+              setIngredientSearchTerm('');
+              setSearchTerm('');
+              setSelectedCountry('');
+              setCountrySearchTerm('');
+              setSelectedCategory('');
+              setCategorySearchTerm('');
+              router.replace('/recipes');
+            }}
+          >
+            Clear All Filters
+          </button>
         </div>
       </div>
 
