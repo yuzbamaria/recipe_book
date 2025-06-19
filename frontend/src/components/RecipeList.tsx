@@ -5,6 +5,7 @@ import axios from 'axios';
 import Link from 'next/link';
 import { countryOptions } from '@/constants/countries';
 import { categoriesOptions } from '@/constants/categories';
+import { useSearchParams, useRouter } from 'next/navigation';
 
 interface Recipe {
   idMeal: string;
@@ -23,6 +24,21 @@ export default function RecipeList() {
   const [countrySearchTerm, setCountrySearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
   const [categorySearchTerm, setCategorySearchTerm] = useState('');
+  const searchParams = useSearchParams();
+  const router = useRouter();
+
+  useEffect(() => {
+    const ingredientFromURL = searchParams.get('ingredient') || '';
+    const countryFromURL = searchParams.get('country') || '';
+    const categoryFromURL = searchParams.get('category') || '';
+
+    setIngredientSearchTerm(ingredientFromURL);
+    setSearchTerm(ingredientFromURL);
+    setSelectedCountry(countryFromURL);
+    setCountrySearchTerm(countryFromURL);
+    setSelectedCategory(categoryFromURL);
+    setCategorySearchTerm(categoryFromURL);
+  }, [searchParams]);
 
   useEffect(() => {
     setLoading(true);
@@ -50,17 +66,18 @@ export default function RecipeList() {
       .finally(() => setLoading(false));
   }, [searchTerm, countrySearchTerm, categorySearchTerm]);
 
-  if (loading) return <p>Loading recipes...</p>;
+  if (loading)
+    return <p className="w-full text-center pt-10">Loading recipes...</p>;
 
   return (
     <main>
-      <h1 className="text-4xl font-bold my-10 text-center text-gray-800">
+      <h1 className="text-4xl font-bold py-10 text-center text-gray-800">
         Recipe list
       </h1>
-      <div className="flex justify-center">
-        <div className="flex flex-col items-center w-[380px]">
+      <div className="flex px-10 justify-center">
+        <div className="flex items-center gap-8">
           {/* Search bar for ingredient */}
-          <div className="flex gap-5 justify-center mb-8">
+          <div className="flex gap-5 justify-center pb-8">
             <input
               type="text"
               placeholder="Search by ingredient..."
@@ -77,7 +94,7 @@ export default function RecipeList() {
           </div>
 
           {/* Country Select + Search Button */}
-          <div className="flex gap-5 justify-center mb-8">
+          <div className="flex gap-5 justify-center pb-8">
             <select
               value={selectedCountry}
               onChange={(e) => setSelectedCountry(e.target.value)}
@@ -100,7 +117,7 @@ export default function RecipeList() {
           </div>
 
           {/* Category Select + Search Button */}
-          <div className="flex gap-5 justify-center mb-8">
+          <div className="flex gap-5 justify-center pb-8">
             <select
               value={selectedCategory}
               onChange={(e) => setSelectedCategory(e.target.value)}
@@ -121,49 +138,47 @@ export default function RecipeList() {
               Search Category
             </button>
           </div>
-
-          <button
-            onClick={() => {
-              setIngredientSearchTerm('');
-              setSearchTerm('');
-              setSelectedCountry('');
-              setCountrySearchTerm('');
-              setSelectedCategory('');
-              setCategorySearchTerm('');
-            }}
-            className="bg-gray-300 text-gray-800 px-4 py-2 mt-4 rounded hover:bg-gray-400 transition-colors duration-200"
-          >
-            Clear All Filters
-          </button>
+          <div className="pb-8">
+            <button
+              className="bg-gray-300 text-gray-800 px-4 py-2 rounded hover:bg-gray-400 transition-colors duration-200"
+              onClick={() => {
+                setIngredientSearchTerm('');
+                setSearchTerm('');
+                setSelectedCountry('');
+                setCountrySearchTerm('');
+                setSelectedCategory('');
+                setCategorySearchTerm('');
+                router.replace('/recipes');
+              }}
+            >
+              Clear All Filters
+            </button>
+          </div>
         </div>
       </div>
 
-      <ul className="flex flex-col items-center gap-12">
+      <ul className="flex flex-wrap justify-center items-center gap-12 px-10">
         {recipesList.length === 0 && (
           <p className="text-gray-600">No recipes found for this ingredient.</p>
         )}
         {recipesList.map((recipe) => (
           <li
             key={recipe.idMeal}
-            className="flex flex-col gap-6 items-center py-10 px-10 w-[300px] md:w-[500px] bg-white rounded-lg shadow-xl overflow-hidden hover:shadow-2xl transition-shadow duration-300"
+            className="flex flex-col gap-6 items-center py-10 px-10 w-[300px] bg-white rounded-lg shadow-xl overflow-hidden hover:shadow-2xl transition-shadow duration-300"
           >
-            
             <h2 className="text-2xl font-bold">{recipe.strMeal}</h2>
             <img
               src={recipe.strMealThumb}
               alt={recipe.strMeal}
               className="w-full h-48 object-cover"
             />
-            {/* <p className="text-gray-700 text-base mb-4">
-              {recipe.strInstructions}
-            </p> */}
-              <Link
-                href={`/recipes/${recipe.idMeal}`}
-                target="_blank"
-                className="inline-block px-4 py-2 mt-auto bg-orange-400 text-white font-bold rounded hover:bg-orange-700 transition-colors duration-200 text-center"
-              >
-                Get details
-              </Link>
+            <Link
+              href={`/recipes/${recipe.idMeal}`}
+              target="_blank"
+              className="inline-block px-4 py-2 mt-auto bg-orange-400 text-white font-bold rounded hover:bg-orange-700 transition-colors duration-200 text-center"
+            >
+              Get details
+            </Link>
           </li>
         ))}
       </ul>
